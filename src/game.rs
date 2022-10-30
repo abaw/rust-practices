@@ -42,6 +42,39 @@ impl Shape {
 
 impl Eq for Shape {}
 
+macro_rules! count_shape_row {
+    () => (0);
+    ( $($acc:expr),+;) => (1);
+    ( $($head:expr),+; $($($tail:expr),+;)*) => (1 + count_shape_row!($($($tail),+;)*));
+}
+
+macro_rules! count_shape_col {
+    ( $($head_row:expr),+; $($($tail_row:expr),+;)+) => (count_shape_col!($($head_row),+));
+    () => (0);
+    ( $head:expr ) => (1);
+    ( $head:expr, $($tail:expr),*) => (1+ count_shape_col!($($tail),*));
+}
+
+macro_rules! shape {
+    ( $($head:expr),+; $($($tail:expr),+;)* ) => {
+        shape![ $($head),+; -> [$($($tail),+;)*] ]
+    };
+    ( $($($acc:expr),+;)* -> [$($head:expr),+; $($($tail:expr),+;)*]) => {
+        shape![ $($head),+; $($($acc),+;)* -> [$($($tail),+;)*]]
+    };
+    ( $($($acc:expr),+;)* -> [] ) => {
+        {
+            const ROWS: usize = count_shape_row!($($($acc),+;)*);
+            const COLS: usize = count_shape_col!($($($acc),+;)*);
+
+            Shape::new(Conventional::from_vec(
+                (ROWS, COLS),
+                matrix![$($($acc),+;)*] ))
+        }
+    };
+}
+
+
 /// The state of the current game
 #[derive(PartialEq, Eq, Debug)]
 pub enum State {
@@ -68,63 +101,42 @@ impl ShapesFactory {
     pub fn new() -> Self {
         let shapes = vec![
             // square
-            Shape::new(Conventional::from_vec(
-                (2, 2),
-                matrix![
-                    true, true;
-                    true, true;
-                ],
-            )),
+            shape![
+                true, true;
+                true, true;
+            ],
             // stick
-            Shape::new(Conventional::from_vec(
-                (4, 1),
-                matrix![
-                    true;
-                    true;
-                    true;
-                    true;
-                ],
-            )),
+            shape![
+                true;
+                true;
+                true;
+                true;
+            ],
             // J
-            Shape::new(Conventional::from_vec(
-                (2, 3),
-                matrix![
-                    true, true, true;
-                    true, false, false;
-                ],
-            )),
+            shape![
+                true, false, false;
+                true, true, true;
+            ],
             // L
-            Shape::new(Conventional::from_vec(
-                (2, 3),
-                matrix![
-                    true, true, true;
-                    false, false, true;
-                ],
-            )),
+            shape![
+                false, false, true;
+                true, true, true;
+            ],
             // S
-            Shape::new(Conventional::from_vec(
-                (2, 3),
-                matrix![
-                    true, true, false;
-                    false, true, true;
-                ],
-            )),
+            shape![
+                false, true, true;
+                true, true, false;
+            ],
             // Z
-            Shape::new(Conventional::from_vec(
-                (2, 3),
-                matrix![
-                    false, true, true;
-                    true, true, false;
-                ],
-            )),
+            shape![
+                true, true, false;
+                false, true, true;
+            ],
             // T
-            Shape::new(Conventional::from_vec(
-                (2, 3),
-                matrix![
-                    true, true, true;
-                    false, true, false;
-                ],
-            )),
+            shape![
+                false, true, false;
+                true, true, true;
+            ],
         ];
 
         ShapesFactory { shapes }
