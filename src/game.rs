@@ -6,7 +6,7 @@ use std::convert::identity;
 /// A Shape is a piece you could control in a Tetris level. A true element means
 /// there is a cell in that position. You could move rotate it in a
 /// Tetris level.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 struct Shape(Conventional<bool>);
 
 impl Shape {
@@ -39,6 +39,8 @@ impl Shape {
         self.0 = new;
     }
 }
+
+impl Eq for Shape {}
 
 /// The state of the current game
 #[derive(PartialEq, Eq, Debug)]
@@ -400,5 +402,37 @@ impl Game {
             }
         }
         res
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn rotate_shape1() {
+        let factory = ShapesFactory::new();
+        let mut s = factory.create_shape();
+        let s_orig = s.clone();
+        s.rotate();
+
+        assert_eq!(s_orig.height(), s.width());
+        assert_eq!(s_orig.width(), s.height());
+
+        s.rotate();
+        s.rotate();
+        s.rotate();
+        assert_eq!(s_orig, s);
+    }
+
+    #[test]
+    fn rotate_shape2() {
+        let factory = ShapesFactory::new();
+        let mut s = factory.create_shape();
+        let s_orig = s.clone();
+        s.rotate();
+        s.rotate();
+        s.rotate();
+        s.rotate();
+        assert_eq!(s_orig, s);
     }
 }
