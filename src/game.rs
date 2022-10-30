@@ -1,3 +1,4 @@
+use tetris_macro::shape2;
 use matrix::prelude::*;
 use rand::prelude::*;
 use std::collections::VecDeque;
@@ -106,37 +107,37 @@ impl ShapesFactory {
                 true, true;
             ],
             // stick
-            shape![
-                true;
-                true;
-                true;
-                true;
-            ],
+            shape2!{
+                o
+                o
+                o
+                o
+            },
             // J
-            shape![
-                true, false, false;
-                true, true, true;
-            ],
+            shape2!{
+                o__
+                ooo
+            },
             // L
-            shape![
-                false, false, true;
-                true, true, true;
-            ],
+            shape2!{
+                __o
+                ooo
+            },
             // S
-            shape![
-                false, true, true;
-                true, true, false;
-            ],
+            shape2!{
+                _oo
+                oo_
+            },
             // Z
-            shape![
-                true, true, false;
-                false, true, true;
-            ],
+            shape2!{
+                oo_
+                _oo
+            },
             // T
-            shape![
-                false, true, false;
-                true, true, true;
-            ],
+            shape2!{
+                _o_
+                ooo
+            },
         ];
 
         ShapesFactory { shapes }

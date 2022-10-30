@@ -245,8 +245,13 @@ dependencies = [
  "crossterm",
  "matrix",
  "rand",
+ "tetris-macro",
  "tui",
 ]
+
+[[package]]
+name = "tetris-macro"
+version = "0.1.0"
 
 [[package]]
 name = "tui"
